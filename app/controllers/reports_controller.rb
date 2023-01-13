@@ -57,9 +57,6 @@ class ReportsController < ApplicationController
   def update_mentions(mentioning_report)
     Mention.where(mentioning_report:).delete_all
     mentioned_report_ids = mentioning_report.content.scan(%r{#{reports_url}/(\d+)}).uniq.flatten
-    mentioned_report_ids.map do |id|
-      mentioned_report = Report.find(id.to_i)
-      Mention.create(mentioning_report:, mentioned_report:)
-    end
+    mentioned_report_ids.map { |id| mentioning_report.mentioning(id) }
   end
 end

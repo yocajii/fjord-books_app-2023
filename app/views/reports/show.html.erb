@@ -3,7 +3,7 @@
 <%= render @report %>
 
 <div>
-  <% if (mentions = @report.mentioning_report.order(:id)) %>
+  <% if (mentions = @report.mentioned_reports.order(:id).presence) %>
     <strong><%= Mention.model_name.human %>:</strong>
     <ul>
       <% mentions.each do |mention| %>
