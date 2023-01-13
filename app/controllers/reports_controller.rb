@@ -20,6 +20,7 @@ class ReportsController < ApplicationController
 
   def create
     @report = current_user.reports.new(report_params)
+    update_mentions @report
 
     if @report.save
       redirect_to @report, notice: t('controllers.common.notice_create', name: Report.model_name.human)
@@ -30,6 +31,7 @@ class ReportsController < ApplicationController
 
   def update
     if @report.update(report_params)
+      update_mentions @report
       redirect_to @report, notice: t('controllers.common.notice_update', name: Report.model_name.human)
     else
       render :edit, status: :unprocessable_entity
@@ -50,5 +52,14 @@ class ReportsController < ApplicationController
 
   def report_params
     params.require(:report).permit(:title, :content)
+  end
+
+  def update_mentions(mentioning_report)
+    Mention.where(mentioning_report:).delete_all
+    mentioned_report_ids = mentioning_report.content.scan(%r{#{reports_url}/(\d+)}).uniq.flatten
+    mentioned_report_ids.map do |id|
+      mentioned_report = Report.find(id.to_i)
+      Mention.create(mentioning_report:, mentioned_report:)
+    end
   end
 end
