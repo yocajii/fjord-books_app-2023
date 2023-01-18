@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Report < ApplicationRecord
+  REPORT_URL = 'http://localhost.3000/reports/'
+
   belongs_to :user
   has_many :comments, as: :commentable, dependent: :destroy
 
@@ -33,7 +35,11 @@ class Report < ApplicationRecord
     created_at.to_date
   end
 
-  def mentioning(mentioned_report_id)
-    active_mentions.create(mentioned_report_id:)
+  def update_mentions
+    Mention.where(mentioning_report_id: id).delete_all
+    mentioned_report_ids = content.scan(/#{REPORT_URL}(\d+)/).uniq.flatten
+    mentioned_report_ids.each do |mentioned_report_id|
+      active_mentions.create(mentioned_report_id:) if Report.exists?(id: mentioned_report_id)
+    end
   end
 end
