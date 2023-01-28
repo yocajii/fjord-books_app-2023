@@ -33,6 +33,22 @@ class Report < ApplicationRecord
     created_at.to_date
   end
 
+  def create_with_mentions(params)
+    Report.transaction do
+      create!(params)
+      update_mentions
+    end
+  end
+
+  def update_with_mentions(params)
+    Report.transaction do
+      update!(params)
+      update_mentions
+    end
+  end
+
+  private
+
   def update_mentions
     mentioned_report_ids = content.scan(%r{http://localhost:3000/reports/(\d+)}).uniq.flatten
     mentioned_reports = Report.where(id: mentioned_report_ids)
