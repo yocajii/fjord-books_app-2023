@@ -50,7 +50,7 @@ class Report < ApplicationRecord
   private
 
   def update_mentions
-    mentioned_report_ids = content.scan(%r{http://localhost:3000/reports/(\d+)}).uniq.flatten
+    mentioned_report_ids = content.scan(%r{http://localhost:3000/reports/(\d+)}).flatten.uniq
     mentioned_reports = Report.where(id: mentioned_report_ids)
     Mention.transaction do
       Mention.where(mentioning_report_id: id).delete_all
