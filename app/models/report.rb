@@ -50,12 +50,12 @@ class Report < ApplicationRecord
   private
 
   def update_mentions
-    mentioned_report_ids = content.scan(%r{http://localhost:3000/reports/(\d+)}).flatten.uniq
-    mentioned_reports = Report.where(id: mentioned_report_ids)
+    new_mentioned_report_ids = content.scan(%r{http://localhost:3000/reports/(\d+)}).flatten.uniq
+    new_mentioned_reports = Report.where(id: new_mentioned_report_ids)
     Mention.transaction do
       active_mentions.destroy_all
-      mentioned_reports.each do |mentioned_report|
-        active_mentions.create!(mentioned_report:)
+      new_mentioned_reports.each do |new_mentioned_report|
+        mentioning_reports << new_mentioned_report
       end
     end
   end
