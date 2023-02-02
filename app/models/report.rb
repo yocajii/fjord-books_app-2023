@@ -33,9 +33,9 @@ class Report < ApplicationRecord
     created_at.to_date
   end
 
-  def create_with_mentions(params)
+  def create_with_mentions
     Report.transaction do
-      create!(params)
+      save!
       update_mentions
     end
   end
