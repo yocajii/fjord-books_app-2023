@@ -35,15 +35,13 @@ class Report < ApplicationRecord
 
   def create_with_mentions
     Report.transaction do
-      save!
-      update_mentions
+      save ? update_mentions : false
     end
   end
 
   def update_with_mentions(params)
     Report.transaction do
-      update!(params)
-      update_mentions
+      update(params) ? update_mentions : false
     end
   end
 
