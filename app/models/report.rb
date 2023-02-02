@@ -53,7 +53,7 @@ class Report < ApplicationRecord
     mentioned_report_ids = content.scan(%r{http://localhost:3000/reports/(\d+)}).flatten.uniq
     mentioned_reports = Report.where(id: mentioned_report_ids)
     Mention.transaction do
-      Mention.where(mentioning_report_id: id).delete_all
+      active_mentions.destroy_all
       mentioned_reports.each do |mentioned_report|
         active_mentions.create!(mentioned_report:)
       end
