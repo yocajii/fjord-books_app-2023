@@ -35,23 +35,13 @@ class Report < ApplicationRecord
 
   def create_with_mentions
     Report.transaction do
-      if save
-        update_mentions
-        true
-      else
-        false
-      end
+      save && update_mentions
     end
   end
 
   def update_with_mentions(params)
     Report.transaction do
-      if update(params)
-        update_mentions
-        true
-      else
-        false
-      end
+      update(params) && update_mentions
     end
   end
 
@@ -66,5 +56,6 @@ class Report < ApplicationRecord
         mentioning_reports << new_mentioned_report
       end
     end
+    true
   end
 end
