@@ -2,6 +2,26 @@
 
 <%= render @report %>
 
+<div>
+  <strong><%= Mention.model_name.human %>:</strong>
+  <% if (mentions = @report.mentioned_reports.order(:id).presence) %>
+  <ul>
+    <% mentions.each do |mention| %>
+      <li>
+        <%= link_to mention.title, report_url(mention) %>
+        <small>
+          (<%= link_to mention.user.name_or_email, mention.user %> - <%= l mention.created_at, format: :short %>)
+        </small>
+      </li>
+    <% end %>
+  </ul>
+  <% else %>
+    <p>
+      (<%= t('mentions.no_mentions') %>)
+    </p>
+  <% end %>
+</div>
+
 <%= render 'shared/comments', commentable: @report %>
 
 <div>
